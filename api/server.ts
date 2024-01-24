@@ -131,7 +131,7 @@ app.put('/admin/articles/:id', async (req, res) => {
     return;
   }
 
-  const id = parseInt(idParam, 10);
+  const id = Number(idParam);
 
   if (Number.isNaN(id)) {
     res.status(400).json({ error: { message: 'ID は数値である必要があります' } });

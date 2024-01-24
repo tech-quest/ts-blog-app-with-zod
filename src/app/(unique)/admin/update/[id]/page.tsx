@@ -29,7 +29,7 @@ export default function ArticleUpdatePage({ params }: { params: Params }) {
     handleDelete,
   } = useHooks(params.id);
 
-  const getError = (error) => {
+  const getError = (error: string) => {
     const errorArray = JSON.parse(error);
     if (errorArray && errorArray.length > 0) {
       return errorArray[0].message;
