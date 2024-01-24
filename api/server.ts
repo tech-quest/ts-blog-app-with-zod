@@ -133,11 +133,6 @@ app.put('/admin/articles/:id', async (req, res) => {
 
   const id = Number(idParam);
 
-  if (Number.isNaN(id)) {
-    res.status(400).json({ error: { message: 'ID は数値である必要があります' } });
-    return;
-  }
-
   const articleIdSchema = z.number().int({
     message: 'ID 形式が不正な形式となっています',
   });
