@@ -38,7 +38,11 @@ export const useMutateFetch = <T>(url: string, method: string) => {
 
   const mutate = async (articleData) => {
     const { id, ...restValues } = articleData;
-    const url = `http://localhost:8000/admin/articles/${id}`;
+    if (id) {
+      const url = `http://localhost:8000/admin/articles/${id}`;
+    } else {
+      const url = `http://localhost:8000/admin/articles`;
+    }
     const body = JSON.stringify(restValues);
     setStatesWhenStartFetching();
 

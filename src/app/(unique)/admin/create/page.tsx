@@ -13,11 +13,19 @@ import { useHooks } from './hooks';
 
 export default function ArticleCreatePage() {
   const { error, studyError, isCreating, handleSubmit } = useHooks();
+
+  const getError = (error) => {
+    const errorArray = JSON.parse(error);
+    if (errorArray && errorArray.length > 0) {
+      return errorArray[0].message;
+    }
+  };
+
   return (
     <MyPageContainer>
       <h1>新規記事作成</h1>
       <MyAdminArticleContainer>
-        {error && <MyAlertMessage color="error">{error.message}</MyAlertMessage>}
+        {error && <MyAlertMessage color="error">{getError(error.message)}</MyAlertMessage>}
         <MyCreateArticleForm isSubmitting={isCreating} onSubmit={handleSubmit} />
         <div>
           <MyButton asChild>
