@@ -1,12 +1,16 @@
+import { useState } from 'react';
+
 import { useDeleteArticle } from './use-delete-article';
 import { useFetchArticles } from './use-fetch-articles';
 
 export const useHooks = () => {
   const { articles, fetchError, fetchStudyError, isLoading, refetch } = useFetchArticles();
-  const { deleteError, deleteStudyError, isDeleting, deleteArticle } = useDeleteArticle();
+  const [currentId, setCurrentId] = useState<string | null>(null);
+  const { deleteError, deleteStudyError, isDeleting, deleteArticle } = useDeleteArticle(currentId);
 
   const handleDelete = async (id: string) => {
-    await deleteArticle({ articleId: id });
+    setCurrentId(id);
+    await deleteArticle({ id });
     await refetch();
   };
 

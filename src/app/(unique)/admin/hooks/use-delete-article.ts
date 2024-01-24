@@ -3,10 +3,10 @@ import { useEffect } from 'react';
 
 import { useDeleteArticleApi } from '~/features/article/hooks/use-delete-article-api';
 
-export const useDeleteArticle = () => {
+export const useDeleteArticle = (id) => {
   const router = useRouter();
 
-  const { success, error, studyError, isDeleting, deleteArticle } = useDeleteArticleApi();
+  const { success, error, studyError, isDeleting, deleteArticle } = useDeleteArticleApi(id);
 
   useEffect(() => {
     if (!success) return;

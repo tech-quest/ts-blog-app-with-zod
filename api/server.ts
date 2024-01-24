@@ -54,8 +54,15 @@ app.get('/admin/articles', async (req, res) => {
 // 作成が完了したら http://localhost:3000/admin/update/1 にアクセスして確認してみましょう！
 app.get('/admin/articles/:id', async (req, res) => {
   const id = Number(req.params.id);
-  if (Number.isNaN(id)) {
-    res.status(404).json({ error: { message: 'ID 形式が不正な形式となっています' } });
+
+  const idSchema = z.number().int({
+    message: 'ID 形式が不正な形式となっています',
+  });
+
+  const result = idSchema.safeParse(id);
+
+  if (!result.success) {
+    res.status(400).json({ error: { message: result.error.message } });
     return;
   }
 
@@ -124,19 +131,12 @@ app.post('/admin/articles', async (req, res) => {
 app.put('/admin/articles/:id', async (req, res) => {
   const { title, content, category, status } = req.body;
 
-  const idParam: string | undefined = req.params.id;
+  const id = Number(req.params.id);
 
-  if (!idParam) {
-    res.status(400).json({ error: { message: 'ID が提供されていません' } });
-    return;
-  }
-
-  const id = Number(idParam);
-
-  const articleIdSchema = z.number().int({
+  const idSchema = z.number().int({
     message: 'ID 形式が不正な形式となっています',
   });
-  const result = articleIdSchema.safeParse(id);
+  const result = idSchema.safeParse(id);
 
   if (!result.success) {
     res.status(400).json({ error: { message: result.error.message } });
@@ -187,11 +187,15 @@ app.put('/admin/articles/:id', async (req, res) => {
 // APIのURL http://localhost:8000/admin/articles/:id
 // 作成が完了したら http://localhost:3000/admin などの削除ボタンをクリックしてみよう
 app.delete('/admin/articles/:id', async (req, res) => {
-  const { articleId } = req.body;
+  const id = Number(req.params.id);
 
-  const id = Number(articleId);
-  if (Number.isNaN(id)) {
-    res.status(400).json({ error: { message: 'ID 形式が不正な形式となっています' } });
+  const idSchema = z.number().int({
+    message: 'ID 形式が不正な形式となっています',
+  });
+  const result = idSchema.safeParse(id);
+
+  if (!result.success) {
+    res.status(400).json({ error: { message: result.error.message } });
     return;
   }
 
@@ -234,9 +238,13 @@ app.get('/articles', async (req, res) => {
 // 作成が完了したら http://localhost:3000/detail/1 にアクセスして確認してみましょう！
 app.get('/articles/:id', async (req, res) => {
   const id = Number(req.params.id);
-  if (Number.isNaN(id)) {
-    res.status(404).json({ error: { message: 'ID 形式が不正な形式となっています' } });
-    return;
+
+  const idSchema = z.number().int({ message: 'ID 形式が不正な形式となっています' });
+
+  const result = idSchema.safeParse(id);
+
+  if (!result.success) {
+    res.status(400).json({ error: { message: result.error.message } });
   }
 
   const record = await prisma.article.findUnique({ where: { id } });
