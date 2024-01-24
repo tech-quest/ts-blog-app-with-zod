@@ -36,9 +36,10 @@ export const useMutateFetch = <T>(url: string, method: string) => {
     setIsLoading(true);
   };
 
-  const mutate = async (values?) => {
-    const body = JSON.stringify(values);
-
+  const mutate = async (articleData) => {
+    const { id, ...restValues } = articleData;
+    const url = `http://localhost:8000/admin/articles/${id}`;
+    const body = JSON.stringify(restValues);
     setStatesWhenStartFetching();
 
     const configs: RequestInit = {

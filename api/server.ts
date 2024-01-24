@@ -1,5 +1,6 @@
 import { Article, PrismaClient } from '@prisma/client';
 import express from 'express';
+import { z } from 'zod';
 
 import { applyServerSettings } from './settings';
 
@@ -84,66 +85,103 @@ app.post('/admin/articles', async (req, res) => {
 
   const requiredMessage = '未入力の内容があります';
 
-  if (title === '') {
-    res.status(400).json({ error: { message: requiredMessage } });
+  const validatedTitle = z.string().min(1, requiredMessage).safeParse(title);
+  if (!validatedTitle.success) {
+    res.status(400).json({ error: { message: validatedTitle.error.message } });
     return;
   }
 
-  if (content === '') {
-    res.status(400).json({ error: { message: requiredMessage } });
+  const validatedContent = z.string().min(1, requiredMessage).safeParse(content);
+  if (!validatedContent.success) {
+    res.status(400).json({ error: { message: validatedContent.error.message } });
     return;
   }
 
-  if (category === '') {
-    res.status(400).json({ error: { message: requiredMessage } });
+  const validatedCategory = z.string().min(1, requiredMessage).safeParse(category);
+  if (!validatedCategory.success) {
+    res.status(400).json({ error: { message: validatedCategory.error.message } });
     return;
   }
 
-  if (status === '') {
-    res.status(400).json({ error: { message: requiredMessage } });
+  const validatedStatus = z.string().min(1, requiredMessage).safeParse(status);
+  if (!validatedStatus.success) {
+    res.status(400).json({ error: { message: validatedStatus.error.message } });
     return;
   }
 
-  const record = await prisma.article.create({ data: { title, content, category, status } });
-
+  const validatedData = {
+    title: validatedTitle.data,
+    content: validatedContent.data,
+    category: validatedCategory.data,
+    status: validatedStatus.data,
+  };
+  const record = await prisma.article.create({ data: validatedData });
   res.json({ data: { id: record.id.toString(10) } });
 });
 
 // APIのURL http://localhost:8000/admin/articles/:id
 // 作成が完了したら http://localhost:3000/admin/update/1 にアクセスして確認してみましょう！
 app.put('/admin/articles/:id', async (req, res) => {
-  const { articleId, title, content, category, status } = req.body;
+  const { title, content, category, status } = req.body;
 
-  const id = Number(articleId);
+  const idParam: string | undefined = req.params.id;
+
+  if (!idParam) {
+    res.status(400).json({ error: { message: 'ID が提供されていません' } });
+    return;
+  }
+
+  const id = parseInt(idParam, 10);
+
   if (Number.isNaN(id)) {
-    res.status(400).json({ error: { message: 'ID 形式が不正な形式となっています' } });
+    res.status(400).json({ error: { message: 'ID は数値である必要があります' } });
+    return;
+  }
+
+  const articleIdSchema = z.number().int({
+    message: 'ID 形式が不正な形式となっています',
+  });
+  const result = articleIdSchema.safeParse(id);
+
+  if (!result.success) {
+    res.status(400).json({ error: { message: result.error.message } });
     return;
   }
 
   const requiredMessage = '未入力の内容があります';
 
-  if (title === '') {
-    res.status(400).json({ error: { message: requiredMessage } });
+  const validatedTitle = z.string().min(1, requiredMessage).safeParse(title);
+  if (!validatedTitle.success) {
+    res.status(400).json({ error: { message: validatedTitle.error.message } });
     return;
   }
 
-  if (content === '') {
-    res.status(400).json({ error: { message: requiredMessage } });
+  const validatedContent = z.string().min(1, requiredMessage).safeParse(content);
+  if (!validatedContent.success) {
+    res.status(400).json({ error: { message: validatedContent.error.message } });
     return;
   }
 
-  if (category === '') {
-    res.status(400).json({ error: { message: requiredMessage } });
+  const validatedCategory = z.string().min(1, requiredMessage).safeParse(category);
+  if (!validatedCategory.success) {
+    res.status(400).json({ error: { message: validatedCategory.error.message } });
     return;
   }
 
-  if (status === '') {
-    res.status(400).json({ error: { message: requiredMessage } });
+  const validatedStatus = z.string().min(1, requiredMessage).safeParse(status);
+  if (!validatedStatus.success) {
+    res.status(400).json({ error: { message: validatedStatus.error.message } });
     return;
   }
 
+  const validatedData = {
+    title: validatedTitle.data,
+    content: validatedContent.data,
+    category: validatedCategory.data,
+    status: validatedStatus.data,
+  };
   try {
-    const record = await prisma.article.update({ where: { id }, data: { title, content, category, status } });
+    const record = await prisma.article.update({ where: { id }, data: { ...validatedData } });
 
     res.json({ data: { id: record.id.toString(10) } });
   } catch {

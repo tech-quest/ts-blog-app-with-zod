@@ -10,7 +10,7 @@ export const useUpdateArticle = (id: string) => {
   const { success, error, studyError, isUpdating, updateArticle } = useUpdateArticleApi();
 
   const handleSubmit = (title: string, content: string, category: ArticleCategory, status: ArticleStatus) => {
-    updateArticle({ articleId: id, title, content, category, status });
+    updateArticle({ id, title, content, category, status });
   };
 
   useEffect(() => {
