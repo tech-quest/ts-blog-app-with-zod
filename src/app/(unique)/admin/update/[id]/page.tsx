@@ -29,19 +29,12 @@ export default function ArticleUpdatePage({ params }: { params: Params }) {
     handleDelete,
   } = useHooks(params.id);
 
-  const getError = (error: string) => {
-    const errorArray = JSON.parse(error);
-    if (errorArray && errorArray.length > 0) {
-      return errorArray[0].message;
-    }
-  };
-
   return (
     <MyPageContainer>
       <h1>記事編集</h1>
       <MyAdminArticleContainer>
         {findError && <MyAlertMessage color="error">{findError.message}</MyAlertMessage>}
-        {updateError && <MyAlertMessage color="error">{getError(updateError.message)}</MyAlertMessage>}
+        {updateError && <MyAlertMessage color="error">{updateError.message}</MyAlertMessage>}
         {deleteError && <MyAlertMessage color="error">{deleteError.message}</MyAlertMessage>}
         {!defaultValues && isLoading && <div>読み込み中...</div>}
         {defaultValues && (

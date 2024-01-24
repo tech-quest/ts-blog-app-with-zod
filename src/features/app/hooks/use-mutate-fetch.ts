@@ -5,7 +5,7 @@ type ErrorResponse = {
   message: string;
 };
 
-export const useMutateFetch = <T>(urlTemplate: string, method: string) => {
+export const useMutateFetch = <T>(url: string, method: string) => {
   const [data, setData] = useState<T | null>();
   const [error, setError] = useState<ErrorResponse | null>();
   const [studyError, setStudyError] = useState<ErrorResponse | null>();
@@ -36,15 +36,9 @@ export const useMutateFetch = <T>(urlTemplate: string, method: string) => {
     setIsLoading(true);
   };
 
-  const mutate = async (articleData) => {
-    const { id, ...restValues } = articleData;
-    let dynamicUrl = urlTemplate;
-    if (id) {
-      dynamicUrl = dynamicUrl.replace(':id', id);
-    } else {
-      dynamicUrl = `http://localhost:8000/admin/articles`;
-    }
-    const body = JSON.stringify(restValues);
+  const mutate = async (values?) => {
+    const body = JSON.stringify(values);
+
     setStatesWhenStartFetching();
 
     const configs: RequestInit = {
@@ -53,7 +47,7 @@ export const useMutateFetch = <T>(urlTemplate: string, method: string) => {
       mode: 'cors',
     };
 
-    return await fetch(dynamicUrl, { ...configs, body })
+    return await fetch(url, { ...configs, body })
       .then(async (res) => {
         setIsLoading(false);
 

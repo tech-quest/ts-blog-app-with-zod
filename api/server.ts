@@ -87,25 +87,25 @@ app.post('/admin/articles', async (req, res) => {
 
   const validatedTitle = z.string().min(1, requiredMessage).safeParse(title);
   if (!validatedTitle.success) {
-    res.status(400).json({ error: { message: validatedTitle.error.message } });
+    res.status(400).json({ error: { message: validatedTitle.error.issues[0].message } });
     return;
   }
 
   const validatedContent = z.string().min(1, requiredMessage).safeParse(content);
   if (!validatedContent.success) {
-    res.status(400).json({ error: { message: validatedContent.error.message } });
+    res.status(400).json({ error: { message: validatedContent.error.issues[0].message } });
     return;
   }
 
   const validatedCategory = z.string().min(1, requiredMessage).safeParse(category);
   if (!validatedCategory.success) {
-    res.status(400).json({ error: { message: validatedCategory.error.message } });
+    res.status(400).json({ error: { message: validatedCategory.error.issues[0].message } });
     return;
   }
 
   const validatedStatus = z.string().min(1, requiredMessage).safeParse(status);
   if (!validatedStatus.success) {
-    res.status(400).json({ error: { message: validatedStatus.error.message } });
+    res.status(400).json({ error: { message: validatedStatus.error.issues[0].message } });
     return;
   }
 
@@ -152,25 +152,25 @@ app.put('/admin/articles/:id', async (req, res) => {
 
   const validatedTitle = z.string().min(1, requiredMessage).safeParse(title);
   if (!validatedTitle.success) {
-    res.status(400).json({ error: { message: validatedTitle.error.message } });
+    res.status(400).json({ error: { message: validatedTitle.error.issues[0].message } });
     return;
   }
 
   const validatedContent = z.string().min(1, requiredMessage).safeParse(content);
   if (!validatedContent.success) {
-    res.status(400).json({ error: { message: validatedContent.error.message } });
+    res.status(400).json({ error: { message: validatedContent.error.issues[0].message } });
     return;
   }
 
   const validatedCategory = z.string().min(1, requiredMessage).safeParse(category);
   if (!validatedCategory.success) {
-    res.status(400).json({ error: { message: validatedCategory.error.message } });
+    res.status(400).json({ error: { message: validatedCategory.error.issues[0].message } });
     return;
   }
 
   const validatedStatus = z.string().min(1, requiredMessage).safeParse(status);
   if (!validatedStatus.success) {
-    res.status(400).json({ error: { message: validatedStatus.error.message } });
+    res.status(400).json({ error: { message: validatedStatus.error.issues[0].message } });
     return;
   }
 
