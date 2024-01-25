@@ -4,13 +4,10 @@ import { useMutateFetch } from '~/features/app/hooks/use-mutate-fetch';
 
 type ApiResponseData = { id: string };
 
-export const useDeleteArticleApi = (id: string) => {
+export const useDeleteArticleApi = () => {
   const [success, setSuccess] = useState<boolean | null>(null);
 
-  const { data, error, studyError, isLoading, mutate } = useMutateFetch<ApiResponseData>(
-    `http://localhost:8000/admin/articles/${id}`,
-    'delete',
-  );
+  const { data, error, studyError, isLoading, mutate } = useMutateFetch<ApiResponseData>('delete');
 
   useEffect(() => {
     if (!data) return;

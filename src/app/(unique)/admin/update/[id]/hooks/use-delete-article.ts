@@ -5,10 +5,10 @@ import { useDeleteArticleApi } from '~/features/article/hooks/use-delete-article
 
 export const useDeleteArticle = (id: string) => {
   const router = useRouter();
-  const { success, error, studyError, isDeleting, deleteArticle } = useDeleteArticleApi(id);
+  const { success, error, studyError, isDeleting, deleteArticle } = useDeleteArticleApi();
 
   const handleDelete = () => {
-    deleteArticle();
+    deleteArticle(undefined, { url: `http://localhost:8000/admin/articles/${id}` });
   };
 
   useEffect(() => {

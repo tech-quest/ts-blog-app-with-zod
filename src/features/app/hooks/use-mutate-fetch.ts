@@ -1,11 +1,13 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
+import { Article } from '../../../../api/models';
+
 type ErrorResponse = {
   message: string;
 };
 
-export const useMutateFetch = <T>(url: string, method: string) => {
+export const useMutateFetch = <T>(method: string, optional?: { initialUrl: string }) => {
   const [data, setData] = useState<T | null>();
   const [error, setError] = useState<ErrorResponse | null>();
   const [studyError, setStudyError] = useState<ErrorResponse | null>();
@@ -36,7 +38,7 @@ export const useMutateFetch = <T>(url: string, method: string) => {
     setIsLoading(true);
   };
 
-  const mutate = async (values?) => {
+  const mutate = async (values?: Article, options?: { url?: string }) => {
     const body = JSON.stringify(values);
 
     setStatesWhenStartFetching();
@@ -46,6 +48,15 @@ export const useMutateFetch = <T>(url: string, method: string) => {
       headers: { 'Content-Type': 'application/json' },
       mode: 'cors',
     };
+
+    const url = options?.url || optional?.initialUrl;
+
+    if (!url) {
+      setError({
+        message: 'URLが指定されていません。',
+      });
+      return;
+    }
 
     return await fetch(url, { ...configs, body })
       .then(async (res) => {

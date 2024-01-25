@@ -7,10 +7,9 @@ type ApiResponseData = { id: string };
 export const useUpdateArticleApi = (id: string) => {
   const [success, setSuccess] = useState<boolean | null>(null);
 
-  const { data, error, studyError, isLoading, mutate } = useMutateFetch<ApiResponseData>(
-    `http://localhost:8000/admin/articles/${id}`,
-    'put',
-  );
+  const { data, error, studyError, isLoading, mutate } = useMutateFetch<ApiResponseData>('put', {
+    initialUrl: `http://localhost:8000/admin/articles/${id}`,
+  });
 
   useEffect(() => {
     if (!data) return;
