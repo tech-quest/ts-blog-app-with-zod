@@ -1,8 +1,6 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-import { Article } from '../../../../api/models';
-
 type ErrorResponse = {
   message: string;
 };
@@ -38,7 +36,14 @@ export const useMutateFetch = <T>(method: string, optional?: { initialUrl: strin
     setIsLoading(true);
   };
 
-  const mutate = async (values?: Article, options?: { url?: string }) => {
+  type ArticleData = {
+    title: string;
+    content: string;
+    category: string;
+    status: string;
+  };
+
+  const mutate = async (values?: ArticleData, options?: { url?: string }) => {
     const body = JSON.stringify(values);
 
     setStatesWhenStartFetching();
