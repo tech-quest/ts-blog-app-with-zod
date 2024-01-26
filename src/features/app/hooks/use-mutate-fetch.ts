@@ -5,7 +5,7 @@ type ErrorResponse = {
   message: string;
 };
 
-export const useMutateFetch = <T>(method: string, initialOptions?: { initialUrl: string }) => {
+export const useMutateFetch = <T>(method: string, initialOptions?: { url: string }) => {
   const [data, setData] = useState<T | null>();
   const [error, setError] = useState<ErrorResponse | null>();
   const [studyError, setStudyError] = useState<ErrorResponse | null>();
@@ -47,7 +47,7 @@ export const useMutateFetch = <T>(method: string, initialOptions?: { initialUrl:
       mode: 'cors',
     };
 
-    const url = options?.url || initialOptions?.initialUrl;
+    const url = options?.url || initialOptions?.url;
 
     if (!url) {
       setError({
