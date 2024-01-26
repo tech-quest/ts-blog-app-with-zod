@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import styles from './styles.module.css';
 
 type TabItem = {
@@ -23,6 +21,7 @@ export const MyTabs = ({ items, value, onChange }: Props) => {
       <div className={styles.tabs} role="tablist">
         {items.map((item) => (
           <button
+            key={item.value}
             className={styles.tab}
             role="tab"
             aria-selected={item.value === value}
