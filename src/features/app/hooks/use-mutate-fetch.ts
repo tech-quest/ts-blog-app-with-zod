@@ -5,7 +5,7 @@ type ErrorResponse = {
   message: string;
 };
 
-export const useMutateFetch = <T>(method: string, optional?: { initialUrl: string }) => {
+export const useMutateFetch = <T>(method: string, initialOptions?: { initialUrl: string }) => {
   const [data, setData] = useState<T | null>();
   const [error, setError] = useState<ErrorResponse | null>();
   const [studyError, setStudyError] = useState<ErrorResponse | null>();
@@ -36,14 +36,7 @@ export const useMutateFetch = <T>(method: string, optional?: { initialUrl: strin
     setIsLoading(true);
   };
 
-  type ArticleData = {
-    title: string;
-    content: string;
-    category: string;
-    status: string;
-  };
-
-  const mutate = async (values?: ArticleData, options?: { url?: string }) => {
+  const mutate = async (values?, options?: { url?: string }) => {
     const body = JSON.stringify(values);
 
     setStatesWhenStartFetching();
@@ -54,7 +47,7 @@ export const useMutateFetch = <T>(method: string, optional?: { initialUrl: strin
       mode: 'cors',
     };
 
-    const url = options?.url || optional?.initialUrl;
+    const url = options?.url || initialOptions?.initialUrl;
 
     if (!url) {
       setError({

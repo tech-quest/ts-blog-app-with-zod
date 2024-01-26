@@ -62,7 +62,7 @@ app.get('/admin/articles/:id', async (req, res) => {
   const result = idSchema.safeParse(id);
 
   if (!result.success) {
-    res.status(400).json({ error: { message: result.error.message } });
+    res.status(400).json({ error: { message: result.error.issues[0].message } });
     return;
   }
 
@@ -139,7 +139,7 @@ app.put('/admin/articles/:id', async (req, res) => {
   const result = idSchema.safeParse(id);
 
   if (!result.success) {
-    res.status(400).json({ error: { message: result.error.message } });
+    res.status(400).json({ error: { message: result.error.issues[0].message } });
     return;
   }
 
@@ -195,7 +195,7 @@ app.delete('/admin/articles/:id', async (req, res) => {
   const result = idSchema.safeParse(id);
 
   if (!result.success) {
-    res.status(400).json({ error: { message: result.error.message } });
+    res.status(400).json({ error: { message: result.error.issues[0].message } });
     return;
   }
 
@@ -244,7 +244,7 @@ app.get('/articles/:id', async (req, res) => {
   const result = idSchema.safeParse(id);
 
   if (!result.success) {
-    res.status(400).json({ error: { message: result.error.message } });
+    res.status(400).json({ error: { message: result.error.issues[0].message } });
   }
 
   const record = await prisma.article.findUnique({ where: { id } });
