@@ -5,7 +5,7 @@ type ErrorResponse = {
   message: string;
 };
 
-export const useMutateFetch = <T>(method: string, initialOptions?: { url: string }) => {
+export const useMutateFetch = <T>(method: string, initialOptions?: { url?: string }) => {
   const [data, setData] = useState<T | null>();
   const [error, setError] = useState<ErrorResponse | null>();
   const [studyError, setStudyError] = useState<ErrorResponse | null>();
