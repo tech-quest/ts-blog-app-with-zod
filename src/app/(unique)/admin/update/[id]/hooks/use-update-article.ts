@@ -7,10 +7,10 @@ import { ArticleCategory, ArticleStatus } from '~/features/article/ui-models/art
 export const useUpdateArticle = (id: string) => {
   const router = useRouter();
 
-  const { success, error, studyError, isUpdating, updateArticle } = useUpdateArticleApi();
+  const { success, error, studyError, isUpdating, updateArticle } = useUpdateArticleApi(id);
 
   const handleSubmit = (title: string, content: string, category: ArticleCategory, status: ArticleStatus) => {
-    updateArticle({ articleId: id, title, content, category, status });
+    updateArticle({ title, content, category, status });
   };
 
   useEffect(() => {

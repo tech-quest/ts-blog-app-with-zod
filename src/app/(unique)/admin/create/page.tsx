@@ -13,6 +13,7 @@ import { useHooks } from './hooks';
 
 export default function ArticleCreatePage() {
   const { error, studyError, isCreating, handleSubmit } = useHooks();
+
   return (
     <MyPageContainer>
       <h1>新規記事作成</h1>

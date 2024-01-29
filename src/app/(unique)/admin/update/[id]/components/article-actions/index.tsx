@@ -14,7 +14,7 @@ export const MyArticleActions = ({ onClickDelete, isDeleting }: Props) => {
     <div className={styles.root}>
       <div>
         <MyButton asChild>
-          <Link href="/">一覧に戻る</Link>
+          <Link href="/admin">一覧に戻る</Link>
         </MyButton>
       </div>
       <div>

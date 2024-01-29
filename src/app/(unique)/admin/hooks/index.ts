@@ -6,7 +6,7 @@ export const useHooks = () => {
   const { deleteError, deleteStudyError, isDeleting, deleteArticle } = useDeleteArticle();
 
   const handleDelete = async (id: string) => {
-    await deleteArticle({ articleId: id });
+    await deleteArticle(undefined, { url: `http://localhost:8000/admin/articles/${id}` });
     await refetch();
   };
 
