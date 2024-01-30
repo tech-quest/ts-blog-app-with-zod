@@ -27,6 +27,24 @@ const initPrisma = () => {
 
 const prisma = initPrisma();
 
+const articleSchema = z.object({
+  title: z.string().min(1, { message: 'タイトルを入力してください' }),
+  content: z.string().min(1, { message: '内容を入力してください' }),
+  category: z.string().min(1, { message: 'カテゴリを入力してください' }),
+  status: z.string().min(1, { message: 'ステータスを入力してください' }),
+});
+
+const idSchema = z.number().int().min(1, { message: 'ID 形式が不正な形式となっています' });
+
+const validateAndHandleId = (id, res) => {
+  const idValidation = idSchema.safeParse(id);
+  if (!idValidation.success) {
+    res.status(400).json({ error: { message: idValidation.error.issues[0].message } });
+    return false;
+  }
+  return true;
+};
+
 // APIのURL http://localhost:8000/admin/articles
 // 作成が完了したら http://localhost:3000/admin にアクセスして確認してみましょう！
 app.get('/admin/articles', async (req, res) => {
@@ -54,17 +72,7 @@ app.get('/admin/articles', async (req, res) => {
 // 作成が完了したら http://localhost:3000/admin/update/1 にアクセスして確認してみましょう！
 app.get('/admin/articles/:id', async (req, res) => {
   const id = Number(req.params.id);
-
-  const idSchema = z.number().int({
-    message: 'ID 形式が不正な形式となっています',
-  });
-
-  const result = idSchema.safeParse(id);
-
-  if (!result.success) {
-    res.status(404).json({ error: { message: result.error.issues[0].message } });
-    return;
-  }
+  if (!validateAndHandleId(id, res)) return;
 
   const record = await prisma.article.findUnique({ where: { id } });
   if (!record) {
@@ -88,98 +96,46 @@ app.get('/admin/articles/:id', async (req, res) => {
 // APIのURL http://localhost:8000/admin/articles
 // 作成が完了したら http://localhost:3000/admin/create にアクセスして確認してみましょう！
 app.post('/admin/articles', async (req, res) => {
-  const { title, content, category, status } = req.body;
+  const parseResult = articleSchema.safeParse(req.body);
 
-  const requiredMessage = '未入力の内容があります';
-
-  const validatedTitle = z.string().min(1, requiredMessage).safeParse(title);
-  if (!validatedTitle.success) {
-    res.status(400).json({ error: { message: validatedTitle.error.issues[0].message } });
+  if (!parseResult.success) {
+    const errorMessage = parseResult.error.issues.map((issue) => issue.message).join(', ');
+    res.status(400).json({ error: { message: errorMessage } });
     return;
   }
 
-  const validatedContent = z.string().min(1, requiredMessage).safeParse(content);
-  if (!validatedContent.success) {
-    res.status(400).json({ error: { message: validatedContent.error.issues[0].message } });
-    return;
-  }
+  const validatedData = parseResult.data;
 
-  const validatedCategory = z.string().min(1, requiredMessage).safeParse(category);
-  if (!validatedCategory.success) {
-    res.status(400).json({ error: { message: validatedCategory.error.issues[0].message } });
-    return;
+  try {
+    const record = await prisma.article.create({ data: validatedData });
+    res.json({ data: { id: record.id.toString(10) } });
+  } catch (error) {
+    res.status(500).json({ error: { message: 'データベース操作に失敗しました。' } });
   }
-
-  const validatedStatus = z.string().min(1, requiredMessage).safeParse(status);
-  if (!validatedStatus.success) {
-    res.status(400).json({ error: { message: validatedStatus.error.issues[0].message } });
-    return;
-  }
-
-  const validatedData = {
-    title: validatedTitle.data,
-    content: validatedContent.data,
-    category: validatedCategory.data,
-    status: validatedStatus.data,
-  };
-  const record = await prisma.article.create({ data: validatedData });
-  res.json({ data: { id: record.id.toString(10) } });
 });
 
 // APIのURL http://localhost:8000/admin/articles/:id
 // 作成が完了したら http://localhost:3000/admin/update/1 にアクセスして確認してみましょう！
 app.put('/admin/articles/:id', async (req, res) => {
-  const { title, content, category, status } = req.body;
-
   const id = Number(req.params.id);
+  if (!validateAndHandleId(id, res)) return;
 
-  const idSchema = z.number().int({
-    message: 'ID 形式が不正な形式となっています',
-  });
-  const result = idSchema.safeParse(id);
-
-  if (!result.success) {
-    res.status(400).json({ error: { message: result.error.issues[0].message } });
+  const parseResult = articleSchema.safeParse(req.body);
+  if (!parseResult.success) {
+    const errorMessage = parseResult.error.issues.map((issue) => issue.message).join(', ');
+    res.status(400).json({ error: { message: errorMessage } });
     return;
   }
 
-  const requiredMessage = '未入力の内容があります';
+  const validatedData = parseResult.data;
 
-  const validatedTitle = z.string().min(1, requiredMessage).safeParse(title);
-  if (!validatedTitle.success) {
-    res.status(400).json({ error: { message: validatedTitle.error.issues[0].message } });
-    return;
-  }
-
-  const validatedContent = z.string().min(1, requiredMessage).safeParse(content);
-  if (!validatedContent.success) {
-    res.status(400).json({ error: { message: validatedContent.error.issues[0].message } });
-    return;
-  }
-
-  const validatedCategory = z.string().min(1, requiredMessage).safeParse(category);
-  if (!validatedCategory.success) {
-    res.status(400).json({ error: { message: validatedCategory.error.issues[0].message } });
-    return;
-  }
-
-  const validatedStatus = z.string().min(1, requiredMessage).safeParse(status);
-  if (!validatedStatus.success) {
-    res.status(400).json({ error: { message: validatedStatus.error.issues[0].message } });
-    return;
-  }
-
-  const validatedData = {
-    title: validatedTitle.data,
-    content: validatedContent.data,
-    category: validatedCategory.data,
-    status: validatedStatus.data,
-  };
   try {
-    const record = await prisma.article.update({ where: { id }, data: { ...validatedData } });
-
+    const record = await prisma.article.update({
+      where: { id },
+      data: validatedData,
+    });
     res.json({ data: { id: record.id.toString(10) } });
-  } catch {
+  } catch (error) {
     res.status(500).json({ error: { message: 'データベース操作に失敗しました。' } });
   }
 });
@@ -188,22 +144,12 @@ app.put('/admin/articles/:id', async (req, res) => {
 // 作成が完了したら http://localhost:3000/admin などの削除ボタンをクリックしてみよう
 app.delete('/admin/articles/:id', async (req, res) => {
   const id = Number(req.params.id);
-
-  const idSchema = z.number().int({
-    message: 'ID 形式が不正な形式となっています',
-  });
-  const result = idSchema.safeParse(id);
-
-  if (!result.success) {
-    res.status(400).json({ error: { message: result.error.issues[0].message } });
-    return;
-  }
+  if (!validateAndHandleId(id, res)) return;
 
   try {
     const record = await prisma.article.delete({ where: { id } });
-
     res.json({ data: { id: record.id.toString(10) } });
-  } catch {
+  } catch (error) {
     res.status(500).json({ error: { message: 'データベース操作に失敗しました。' } });
   }
 });
@@ -238,14 +184,7 @@ app.get('/articles', async (req, res) => {
 // 作成が完了したら http://localhost:3000/detail/1 にアクセスして確認してみましょう！
 app.get('/articles/:id', async (req, res) => {
   const id = Number(req.params.id);
-
-  const idSchema = z.number().int({ message: 'ID 形式が不正な形式となっています' });
-
-  const result = idSchema.safeParse(id);
-
-  if (!result.success) {
-    res.status(404).json({ error: { message: result.error.issues[0].message } });
-  }
+  if (!validateAndHandleId(id, res)) return;
 
   const record = await prisma.article.findUnique({ where: { id } });
   if (record === null) {
