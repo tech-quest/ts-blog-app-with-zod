@@ -23,7 +23,7 @@ export const MyTextareaField = ({ label, name, value, onChange, error }: Props) 
     <div className={fieldStyles.row}>
       <div className={fieldStyles.label}>
         <label htmlFor={name}>{label}</label>
-        <div className={styles.errorMessageText}>{error && <MyErrorMessage id={errorId} message={error} />}</div>
+        <div>{error && <MyErrorMessage id={errorId} message={error} />}</div>
       </div>
       <div className={fieldStyles.field}>
         <textarea
