@@ -93,7 +93,7 @@ app.post('/admin/articles', async (req, res) => {
   const articleSchema = z.object({
     title: z.string().min(1, { message: 'タイトルを入力してください' }),
     content: z.string().min(1, { message: '内容を入力してください' }),
-    category: z.string().min(1, { message: 'カテゴリを入力してください' }),
+    category: z.string().min(1, { message: 'カテゴリーを入力してください' }),
     status: z.string().min(1, { message: 'ステータスを入力してください' }),
   });
 
@@ -131,14 +131,17 @@ app.put('/admin/articles/:id', async (req, res) => {
   const articleSchema = z.object({
     title: z.string().min(1, { message: 'タイトルを入力してください' }),
     content: z.string().min(1, { message: '内容を入力してください' }),
-    category: z.string().min(1, { message: 'カテゴリを入力してください' }),
+    category: z.string().min(1, { message: 'カテゴリーを入力してください' }),
     status: z.string().min(1, { message: 'ステータスを入力してください' }),
   });
 
   const parseResult = articleSchema.safeParse(req.body);
   if (!parseResult.success) {
-    const errorMessage = parseResult.error.issues.map((issue) => issue.message).join(', ');
-    res.status(400).json({ error: { message: errorMessage } });
+    const fieldErrors = parseResult.error.issues.reduce((errors, issue) => {
+      errors[issue.path[0]] = issue.message;
+      return errors;
+    }, {});
+    res.status(400).json({ error: { message: fieldErrors } });
     return;
   }
 

@@ -1,5 +1,7 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+
 import { MyAlertMessage } from '~/components/surface/dialogs/alert-message';
 import { MyPageContainer } from '~/features/app/components/page-container';
 import { MyStudyAlert } from '~/features/app/components/study-alert';
@@ -29,16 +31,29 @@ export default function ArticleUpdatePage({ params }: { params: Params }) {
     handleDelete,
   } = useHooks(params.id);
 
+  const [fieldErrors, setFieldErrors] = useState({ title: '', content: '', category: '', status: '' });
+
+  useEffect(() => {
+    if (updateError && updateError.message) {
+      const errorObj = typeof updateError.message === 'string' ? JSON.parse(updateError.message) : updateError.message;
+      setFieldErrors(errorObj);
+    }
+  }, [updateError]);
+
   return (
     <MyPageContainer>
       <h1>記事編集</h1>
       <MyAdminArticleContainer>
         {findError && <MyAlertMessage color="error">{findError.message}</MyAlertMessage>}
-        {updateError && <MyAlertMessage color="error">{updateError.message}</MyAlertMessage>}
         {deleteError && <MyAlertMessage color="error">{deleteError.message}</MyAlertMessage>}
         {!defaultValues && isLoading && <div>読み込み中...</div>}
         {defaultValues && (
-          <MyUpdateArticleForm defaultValues={defaultValues} isSubmitting={isUpdating} onSubmit={handleSubmit} />
+          <MyUpdateArticleForm
+            defaultValues={defaultValues}
+            isSubmitting={isUpdating}
+            onSubmit={handleSubmit}
+            errors={fieldErrors}
+          />
         )}
         <MyArticleActions onClickDelete={handleDelete} isDeleting={isDeleting} />
       </MyAdminArticleContainer>

@@ -12,13 +12,21 @@ import styles from './styles.module.css';
 
 export type DefaultValues = { title: string; content: string; category: ArticleCategory; status: ArticleStatus };
 
+type FieldErrors = {
+  title: string;
+  content: string;
+  category: string;
+  status: string;
+};
+
 type Props = {
   defaultValues: DefaultValues;
   isSubmitting: boolean;
   onSubmit: (title: string, content: string, category: ArticleCategory, status: ArticleStatus) => void;
+  errors: FieldErrors;
 };
 
-export const MyUpdateArticleForm = ({ defaultValues, isSubmitting, onSubmit }: Props) => {
+export const MyUpdateArticleForm = ({ defaultValues, isSubmitting, onSubmit, errors }: Props) => {
   const [title, setTitle] = useState(defaultValues.title);
   const [content, setContent] = useState(defaultValues.content);
   const [category, setCategory] = useState<ArticleCategory>(defaultValues.category);
@@ -45,14 +53,21 @@ export const MyUpdateArticleForm = ({ defaultValues, isSubmitting, onSubmit }: P
   return (
     <MyPanel>
       <form className={styles.form} onSubmit={handleSubmit} noValidate>
-        <MyTextField label="タイトル" name="title" value={title} onChange={handleChangeTitle} />
-        <MyTextareaField label="内容" name="content" value={content} onChange={handleChangeContent} />
+        <MyTextField label="タイトル" name="title" value={title} onChange={handleChangeTitle} error={errors?.title} />
+        <MyTextareaField
+          label="内容"
+          name="content"
+          value={content}
+          onChange={handleChangeContent}
+          error={errors?.content}
+        />
         <MySelectField
           items={categoryItems}
           label="カテゴリー"
           name="category"
           value={category}
           onChange={handleChangeCategory}
+          error={errors?.category}
         />
         <MyRadioField
           items={statusItems}
@@ -60,6 +75,7 @@ export const MyUpdateArticleForm = ({ defaultValues, isSubmitting, onSubmit }: P
           name="status"
           value={status}
           onChange={handleChangeStatus}
+          error={errors?.status}
         />
         <div>
           <MyButton type="submit" color="primary" disabled={isSubmitting}>

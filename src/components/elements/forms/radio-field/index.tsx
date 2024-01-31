@@ -30,6 +30,7 @@ export const MyRadioField = ({ label, items, name, value, onChange, error }: Pro
     <div className={fieldStyles.row}>
       <div className={fieldStyles.label}>
         <label htmlFor={name}>{label}</label>
+        <div className={styles.errorMessageText}>{error && <MyErrorMessage id={errorId} message={error} />}</div>
       </div>
       <div className={styles.items}>
         {items.map((item, index) => {
@@ -52,7 +53,6 @@ export const MyRadioField = ({ label, items, name, value, onChange, error }: Pro
           );
         })}
       </div>
-      {error && <MyErrorMessage id={errorId} message={error} />}
     </div>
   );
 };

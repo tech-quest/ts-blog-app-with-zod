@@ -1,9 +1,6 @@
-import clsx from 'clsx';
-
 import fieldStyles from '~/components/elements/forms/shared/field-styles.module.css';
 import { MyErrorMessage } from '~/components/elements/typographies/error-message';
 
-import { MyMultilineString } from '../../typographies/multiline-string';
 import styles from './styles.module.css';
 
 type RadioItem = {
@@ -30,6 +27,7 @@ export const MySelectField = ({ label, items, name, value, onChange, error }: Pr
     <div className={fieldStyles.row}>
       <div className={fieldStyles.label}>
         <label htmlFor={name}>{label}</label>
+        <div className={styles.errorMessageText}>{error && <MyErrorMessage id={errorId} message={error} />}</div>
       </div>
       <div className={fieldStyles.field}>
         <div className={styles.select}>
@@ -50,7 +48,6 @@ export const MySelectField = ({ label, items, name, value, onChange, error }: Pr
           </select>
         </div>
       </div>
-      {error && <MyErrorMessage id={errorId} message={error} />}
     </div>
   );
 };
