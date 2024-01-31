@@ -55,6 +55,11 @@ app.get('/admin/articles', async (req, res) => {
 app.get('/admin/articles/:id', async (req, res) => {
   const id = Number(req.params.id);
 
+  if (isNaN(id)) {
+    res.status(400).json({ error: { message: 'ID が数値ではありません' } });
+    return;
+  }
+
   const idSchema = z.number().int().min(1, { message: 'ID 形式が不正な形式となっています' });
   const result = idSchema.safeParse(id);
 
@@ -110,6 +115,12 @@ app.post('/admin/articles', async (req, res) => {
 // 作成が完了したら http://localhost:3000/admin/update/1 にアクセスして確認してみましょう！
 app.put('/admin/articles/:id', async (req, res) => {
   const id = Number(req.params.id);
+
+  if (isNaN(id)) {
+    res.status(400).json({ error: { message: 'ID が数値ではありません' } });
+    return;
+  }
+
   const idSchema = z.number().int().min(1, { message: 'ID 形式が不正な形式となっています' });
   const result = idSchema.safeParse(id);
   if (!result.success) {
@@ -148,6 +159,11 @@ app.put('/admin/articles/:id', async (req, res) => {
 // 作成が完了したら http://localhost:3000/admin などの削除ボタンをクリックしてみよう
 app.delete('/admin/articles/:id', async (req, res) => {
   const id = Number(req.params.id);
+
+  if (isNaN(id)) {
+    res.status(400).json({ error: { message: 'ID が数値ではありません' } });
+    return;
+  }
 
   const idSchema = z.number().int().min(1, { message: 'ID 形式が不正な形式となっています' });
   const result = idSchema.safeParse(id);
@@ -194,6 +210,12 @@ app.get('/articles', async (req, res) => {
 // 作成が完了したら http://localhost:3000/detail/1 にアクセスして確認してみましょう！
 app.get('/articles/:id', async (req, res) => {
   const id = Number(req.params.id);
+
+  if (isNaN(id)) {
+    res.status(400).json({ error: { message: 'ID が数値ではありません' } });
+    return;
+  }
+
   const idSchema = z.number().int().min(1, { message: 'ID 形式が不正な形式となっています' });
   const result = idSchema.safeParse(id);
 
