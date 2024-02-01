@@ -100,14 +100,19 @@ app.post('/admin/articles', async (req, res) => {
   const parseResult = articleSchema.safeParse(req.body);
 
   if (!parseResult.success) {
-    const errorMessage = parseResult.error.issues.map((issue) => issue.message).join(', ');
-    res.status(400).json({ error: { message: errorMessage } });
+    const fieldErrors = parseResult.error.issues.reduce((errors, issue) => {
+      errors[issue.path[0]] = issue.message;
+      return errors;
+    }, {});
+    res.status(400).json({ error: { message: fieldErrors } });
     return;
   }
 
   const validatedData = parseResult.data;
 
-  const record = await prisma.article.create({ data: validatedData });
+  const record = await prisma.article.create({
+    data: validatedData,
+  });
   res.json({ data: { id: record.id.toString(10) } });
 });
 
