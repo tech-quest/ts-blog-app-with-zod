@@ -1,6 +1,5 @@
 .root {
   margin-bottom: 0.5rem;
-  margin-top: 4px;
   color: rgb(var(--theme-error-dark));
   font-weight: bold;
 }

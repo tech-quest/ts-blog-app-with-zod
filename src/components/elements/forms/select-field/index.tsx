@@ -27,7 +27,6 @@ export const MySelectField = ({ label, items, name, value, onChange, error }: Pr
     <div className={fieldStyles.row}>
       <div className={fieldStyles.label}>
         <label htmlFor={name}>{label}</label>
-        <div>{error && <MyErrorMessage id={errorId} message={error} />}</div>
       </div>
       <div className={fieldStyles.field}>
         <div className={styles.select}>
@@ -48,6 +47,7 @@ export const MySelectField = ({ label, items, name, value, onChange, error }: Pr
           </select>
         </div>
       </div>
+      {error && <MyErrorMessage id={errorId} message={error} />}
     </div>
   );
 };
