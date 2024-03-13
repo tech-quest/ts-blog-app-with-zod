@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { DefaultValues } from '~/app/(unique)/admin/update/[id]/components/update-article-form';
+import { DefaultValues } from '~/app/(unique)/admin/update/[id]/default-values';
 import { useFindArticleApi } from '~/features/article/hooks/use-find-article-api';
 import { ArticleCategory, ArticleStatus } from '~/features/article/ui-models/article';
 

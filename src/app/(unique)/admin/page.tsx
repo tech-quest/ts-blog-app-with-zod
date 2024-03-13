@@ -13,12 +13,11 @@ import { useHooks } from './hooks';
 export default function AdminPage() {
   const { articles, fetchError, fetchStudyError, isLoading, deleteError, deleteStudyError, isDeleting, handleDelete } =
     useHooks();
-  const deleteErrorMessage = typeof deleteError?.message === 'string' && deleteError.message;
   return (
     <MyPageContainer>
       <h1>作成した記事の一覧</h1>
       {fetchError && <MyAlertMessage color="error">{fetchError.message}</MyAlertMessage>}
-      {deleteError && <MyAlertMessage color="error">{deleteErrorMessage}</MyAlertMessage>}
+      {deleteError && <MyAlertMessage color="error">{deleteError.message}</MyAlertMessage>}
       {isLoading ? (
         <div>読み込み中...</div>
       ) : (

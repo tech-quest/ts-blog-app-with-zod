@@ -1,20 +1,12 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-import { FieldErrors } from '~/app/(unique)/admin/update/[id]/components/update-article-form';
-
-type ErrorResponse = {
-  message: string;
-};
-
-type FormErrorResponse = {
-  message: FieldErrors;
-};
+import { Error } from './error-types';
 
 export const useMutateFetch = <T>(method: string, initialOptions?: { url?: string }) => {
   const [data, setData] = useState<T | null>();
-  const [error, setError] = useState<ErrorResponse | FormErrorResponse | null>();
-  const [studyError, setStudyError] = useState<ErrorResponse | null>();
+  const [error, setError] = useState<Error | null>();
+  const [studyError, setStudyError] = useState<Error | null>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
   const handleError = async (res: Response) => {
@@ -25,24 +17,26 @@ export const useMutateFetch = <T>(method: string, initialOptions?: { url?: strin
         return;
       }
       if (!json.error) {
-        setError({ message: '原因不明のエラーが発生しました。' });
+        setError({ code: 'UNKNOWN_ERROR', message: '原因不明のエラーが発生しました。', fields: null });
+
         return;
       }
 
       if (json.error.message && typeof json.error.message === 'object' && !Array.isArray(json.error.message)) {
-        setError(json.error as FormErrorResponse);
+        setError(json.error as Error);
         return;
       }
 
       if (typeof json.error.message === 'string') {
-        setError(json.error as ErrorResponse);
-        setError({ message: json.error.message });
+        setError({ code: 'UNKNOWN_ERROR', message: json.error.message, fields: null });
         return;
       }
-      setError({ message: '原因不明のエラーが発生しました。' });
+      setError({ code: 'UNKNOWN_ERROR', message: '原因不明のエラーが発生しました。', fields: null });
     } catch {
       setStudyError({
+        code: 'API_NOT_AVAILABLE',
         message: 'API が作成されていないか、ルーティングの設定が誤っています。',
+        fields: null,
       });
     }
   };
@@ -67,7 +61,9 @@ export const useMutateFetch = <T>(method: string, initialOptions?: { url?: strin
 
     if (!url) {
       setError({
+        code: 'MISSING_URL',
         message: 'URLが指定されていません。',
+        fields: null,
       });
       return;
     }
@@ -85,7 +81,9 @@ export const useMutateFetch = <T>(method: string, initialOptions?: { url?: strin
       })
       .catch(() => {
         setError({
+          code: 'NETWORK_ERROR',
           message: '通信エラーが発生しました。ネットワーク環境を確認するか、時間を置いて再度アクセスしてください。',
+          fields: null,
         });
       });
   };

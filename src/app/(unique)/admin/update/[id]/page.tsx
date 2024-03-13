@@ -29,30 +29,20 @@ export default function ArticleUpdatePage({ params }: { params: Params }) {
     handleDelete,
   } = useHooks(params.id);
 
-  const fieldErrors =
-    typeof updateError?.message === 'object' && !Array.isArray(updateError?.message)
-      ? updateError.message
-      : { title: '', content: '', category: '', status: '' };
-
-  const upDateErrorMessage = typeof updateError?.message === 'string' && updateError.message;
-  const deleteErrorMessage = typeof deleteError?.message === 'string' && deleteError.message;
-
   return (
     <MyPageContainer>
       <h1>記事編集</h1>
       <MyAdminArticleContainer>
-        {findError && <MyAlertMessage color="error">{findError.message}</MyAlertMessage>}
-        {updateError && typeof updateError?.message === 'string' && (
-          <MyAlertMessage color="error">{upDateErrorMessage}</MyAlertMessage>
-        )}
-        {deleteError && <MyAlertMessage color="error">{deleteErrorMessage}</MyAlertMessage>}
+        {findError && findError.message && <MyAlertMessage color="error">{findError.message}</MyAlertMessage>}
+        {updateError && updateError.message && <MyAlertMessage color="error">{updateError.message}</MyAlertMessage>}
+        {deleteError && deleteError.message && <MyAlertMessage color="error">{deleteError.message}</MyAlertMessage>}
         {!defaultValues && isLoading && <div>読み込み中...</div>}
-        {defaultValues && (
+        {defaultValues && updateError && updateError.fields !== null && (
           <MyUpdateArticleForm
             defaultValues={defaultValues}
             isSubmitting={isUpdating}
             onSubmit={handleSubmit}
-            errors={fieldErrors}
+            errors={updateError.fields}
           />
         )}
         <MyArticleActions onClickDelete={handleDelete} isDeleting={isDeleting} />

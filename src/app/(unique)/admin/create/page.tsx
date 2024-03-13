@@ -13,12 +13,11 @@ import { useHooks } from './hooks';
 
 export default function ArticleCreatePage() {
   const { error, studyError, isCreating, handleSubmit } = useHooks();
-  const [fieldErrors, setFieldErrors] = useState({ title: '', content: '', category: '', status: '' });
+  const [fieldError, setfieldError] = useState({ title: '', content: '', category: '', status: '' });
 
   useEffect(() => {
-    if (error && error.message) {
-      const errorObj = typeof error.message === 'string' ? JSON.parse(error.message) : error.message;
-      setFieldErrors(errorObj);
+    if (error && error.fields) {
+      setfieldError(error.fields);
     }
   }, [error]);
 
@@ -26,7 +25,7 @@ export default function ArticleCreatePage() {
     <MyPageContainer>
       <h1>新規記事作成</h1>
       <MyAdminArticleContainer>
-        <MyCreateArticleForm isSubmitting={isCreating} onSubmit={handleSubmit} errors={fieldErrors} />
+        <MyCreateArticleForm isSubmitting={isCreating} onSubmit={handleSubmit} errors={fieldError} />
         <div>
           <MyButton asChild>
             <Link href="/admin">一覧に戻る</Link>

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { FieldError } from '~/app/(unique)/admin/field-error-types';
 import { MyButton } from '~/components/elements/buttons/button';
 import { MyRadioField } from '~/components/elements/forms/radio-field';
 import { MySelectField } from '~/components/elements/forms/select-field';
@@ -10,17 +11,10 @@ import { ArticleCategory, ArticleStatus, categoryItems, statusItems } from '~/fe
 
 import styles from './styles.module.css';
 
-type FieldErrors = {
-  title: string;
-  content: string;
-  category: string;
-  status: string;
-};
-
 type Props = {
   isSubmitting: boolean;
   onSubmit: (title: string, content: string, category: ArticleCategory, status: ArticleStatus) => void;
-  errors: FieldErrors;
+  errors: FieldError;
 };
 
 export const MyCreateArticleForm = ({ isSubmitting, onSubmit, errors }: Props) => {

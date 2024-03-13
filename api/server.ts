@@ -99,11 +99,11 @@ app.post('/admin/articles', async (req, res) => {
   const parseResult = articleSchema.safeParse(req.body);
 
   if (!parseResult.success) {
-    const fieldErrors = parseResult.error.issues.reduce((errors, issue) => {
+    const fieldError = parseResult.error.issues.reduce((errors, issue) => {
       errors[issue.path[0]] = issue.message;
       return errors;
     }, {});
-    res.status(400).json({ error: { message: fieldErrors } });
+    res.status(400).json({ error: { message: fieldError } });
     return;
   }
 
@@ -141,11 +141,11 @@ app.put('/admin/articles/:id', async (req, res) => {
 
   const parseResult = articleSchema.safeParse(req.body);
   if (!parseResult.success) {
-    const fieldErrors = parseResult.error.issues.reduce((errors, issue) => {
+    const fieldError = parseResult.error.issues.reduce((errors, issue) => {
       errors[issue.path[0]] = issue.message;
       return errors;
     }, {});
-    res.status(400).json({ error: { message: fieldErrors } });
+    res.status(400).json({ error: { message: fieldError } });
     return;
   }
 

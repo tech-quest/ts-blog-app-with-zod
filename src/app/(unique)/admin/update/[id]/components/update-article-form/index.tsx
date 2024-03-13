@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import { FieldError } from '~/app/(unique)/admin/field-error-types';
+import { DefaultValues } from '~/app/(unique)/admin/update/[id]/default-values';
 import { MyButton } from '~/components/elements/buttons/button';
 import { MyRadioField } from '~/components/elements/forms/radio-field';
 import { MySelectField } from '~/components/elements/forms/select-field';
@@ -10,20 +12,11 @@ import { ArticleCategory, ArticleStatus, categoryItems, statusItems } from '~/fe
 
 import styles from './styles.module.css';
 
-export type DefaultValues = { title: string; content: string; category: ArticleCategory; status: ArticleStatus };
-
-export type FieldErrors = {
-  title: string;
-  content: string;
-  category: string;
-  status: string;
-};
-
 type Props = {
   defaultValues: DefaultValues;
   isSubmitting: boolean;
   onSubmit: (title: string, content: string, category: ArticleCategory, status: ArticleStatus) => void;
-  errors: FieldErrors;
+  errors: FieldError;
 };
 
 export const MyUpdateArticleForm = ({ defaultValues, isSubmitting, onSubmit, errors }: Props) => {
