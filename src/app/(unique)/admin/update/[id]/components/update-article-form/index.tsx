@@ -12,7 +12,7 @@ import styles from './styles.module.css';
 
 export type DefaultValues = { title: string; content: string; category: ArticleCategory; status: ArticleStatus };
 
-type FieldErrors = {
+export type FieldErrors = {
   title: string;
   content: string;
   category: string;

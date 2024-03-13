@@ -1,7 +1,5 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-
 import { MyAlertMessage } from '~/components/surface/dialogs/alert-message';
 import { MyPageContainer } from '~/features/app/components/page-container';
 import { MyStudyAlert } from '~/features/app/components/study-alert';
@@ -31,21 +29,23 @@ export default function ArticleUpdatePage({ params }: { params: Params }) {
     handleDelete,
   } = useHooks(params.id);
 
-  const [fieldErrors, setFieldErrors] = useState({ title: '', content: '', category: '', status: '' });
+  const fieldErrors =
+    typeof updateError?.message === 'object' && !Array.isArray(updateError?.message)
+      ? updateError.message
+      : { title: '', content: '', category: '', status: '' };
 
-  useEffect(() => {
-    if (updateError && updateError.message) {
-      const errorObj = typeof updateError.message === 'string' ? JSON.parse(updateError.message) : updateError.message;
-      setFieldErrors(errorObj);
-    }
-  }, [updateError]);
+  const upDateErrorMessage = typeof updateError?.message === 'string' && updateError.message;
+  const deleteErrorMessage = typeof deleteError?.message === 'string' && deleteError.message;
 
   return (
     <MyPageContainer>
       <h1>記事編集</h1>
       <MyAdminArticleContainer>
         {findError && <MyAlertMessage color="error">{findError.message}</MyAlertMessage>}
-        {deleteError && <MyAlertMessage color="error">{deleteError.message}</MyAlertMessage>}
+        {updateError && typeof updateError?.message === 'string' && (
+          <MyAlertMessage color="error">{upDateErrorMessage}</MyAlertMessage>
+        )}
+        {deleteError && <MyAlertMessage color="error">{deleteErrorMessage}</MyAlertMessage>}
         {!defaultValues && isLoading && <div>読み込み中...</div>}
         {defaultValues && (
           <MyUpdateArticleForm
