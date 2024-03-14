@@ -63,13 +63,24 @@ app.get('/admin/articles/:id', async (req, res) => {
   const result = idSchema.safeParse(id);
 
   if (!result.success) {
-    res.status(400).json({ error: { message: result.error.issues[0].message } });
+    const errorResponse = {
+      code: 'VALIDATION_ERROR',
+      message: result.error.issues[0].message,
+      fields: null,
+    };
+    res.status(400).json(errorResponse);
+
     return;
   }
 
   const record = await prisma.article.findUnique({ where: { id } });
   if (!record) {
-    res.status(404).json({ error: { message: '記事が見つかりませんでした' } });
+    const errorResponse = {
+      code: 'NOT_FOUND',
+      message: '記事が見つかりませんでした',
+      fields: null,
+    };
+    res.status(404).json(errorResponse);
     return;
   }
 
@@ -103,7 +114,14 @@ app.post('/admin/articles', async (req, res) => {
       errors[issue.path[0]] = issue.message;
       return errors;
     }, {});
-    res.status(400).json({ error: { message: fieldError } });
+    const errorResponse = {
+      code: 'VALIDATION_ERROR',
+      message: '入力内容に誤りがあります。',
+      fields: fieldError,
+    };
+
+    res.status(400).json(errorResponse);
+
     return;
   }
 
@@ -128,7 +146,12 @@ app.put('/admin/articles/:id', async (req, res) => {
     .min(1, { message: 'ID 形式が不正な形式となっています' });
   const result = idSchema.safeParse(id);
   if (!result.success) {
-    res.status(400).json({ error: { message: result.error.issues[0].message } });
+    const errorResponse = {
+      code: 'VALIDATION_ERROR',
+      message: result.error.issues[0].message,
+      fields: null,
+    };
+    res.status(400).json(errorResponse);
     return;
   }
 
@@ -145,7 +168,12 @@ app.put('/admin/articles/:id', async (req, res) => {
       errors[issue.path[0]] = issue.message;
       return errors;
     }, {});
-    res.status(400).json({ error: { message: fieldError } });
+    const errorResponse = {
+      code: 'VALIDATION_ERROR',
+      message: '入力内容に誤りがあります。',
+      fields: fieldError,
+    };
+    res.status(400).json(errorResponse);
     return;
   }
 
@@ -158,7 +186,12 @@ app.put('/admin/articles/:id', async (req, res) => {
     });
     res.json({ data: { id: record.id.toString(10) } });
   } catch {
-    res.status(500).json({ error: { message: 'データベース操作に失敗しました。' } });
+    const errorResponse = {
+      code: 'SERVER_ERROR',
+      message: 'データベース操作に失敗しました。',
+      fields: null,
+    };
+    res.status(500).json(errorResponse);
   }
 });
 
@@ -174,7 +207,12 @@ app.delete('/admin/articles/:id', async (req, res) => {
     .min(1, { message: 'ID 形式が不正な形式となっています' });
   const result = idSchema.safeParse(id);
   if (!result.success) {
-    res.status(400).json({ error: { message: result.error.issues[0].message } });
+    const errorResponse = {
+      code: 'VALIDATION_ERROR',
+      message: result.error.issues[0].message,
+      fields: null,
+    };
+    res.status(400).json(errorResponse);
     return;
   }
 
@@ -182,7 +220,12 @@ app.delete('/admin/articles/:id', async (req, res) => {
     const record = await prisma.article.delete({ where: { id } });
     res.json({ data: { id: record.id.toString(10) } });
   } catch {
-    res.status(500).json({ error: { message: 'データベース操作に失敗しました。' } });
+    const errorResponse = {
+      code: 'SERVER_ERROR',
+      message: 'データベース操作に失敗しました。',
+      fields: null,
+    };
+    res.status(500).json(errorResponse);
   }
 });
 
@@ -226,19 +269,35 @@ app.get('/articles/:id', async (req, res) => {
   const result = idSchema.safeParse(id);
 
   if (!result.success) {
-    res.status(400).json({ error: { message: result.error.issues[0].message } });
+    const errorResponse = {
+      code: 'VALIDATION_ERROR',
+      message: result.error.issues[0].message,
+      fields: null,
+    };
+    res.status(400).json(errorResponse);
+
     return;
   }
 
   const record = await prisma.article.findUnique({ where: { id } });
   if (record === null) {
-    res.status(404).json({ error: { message: '記事が見つかりませんでした' } });
+    const errorResponse = {
+      code: 'NOT_FOUND',
+      message: '記事が見つかりませんでした',
+      fields: null,
+    };
+    res.status(404).json(errorResponse);
     return;
   }
 
   // Memo: 公開されていない記事は 404 Not Found 扱いにする
   if (record.status !== '公開') {
-    res.status(404).json({ error: { message: '記事が見つかりませんでした' } });
+    const errorResponse = {
+      code: 'NOT_FOUND',
+      message: '記事が見つかりませんでした',
+      fields: null,
+    };
+    res.status(404).json(errorResponse);
     return;
   }
 

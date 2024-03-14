@@ -37,12 +37,12 @@ export default function ArticleUpdatePage({ params }: { params: Params }) {
         {updateError && updateError.message && <MyAlertMessage color="error">{updateError.message}</MyAlertMessage>}
         {deleteError && deleteError.message && <MyAlertMessage color="error">{deleteError.message}</MyAlertMessage>}
         {!defaultValues && isLoading && <div>読み込み中...</div>}
-        {defaultValues && updateError && updateError.fields !== null && (
+        {defaultValues && (
           <MyUpdateArticleForm
             defaultValues={defaultValues}
             isSubmitting={isUpdating}
             onSubmit={handleSubmit}
-            errors={updateError.fields}
+            errors={updateError?.fields || { title: '', content: '', category: '', status: '' }}
           />
         )}
         <MyArticleActions onClickDelete={handleDelete} isDeleting={isDeleting} />

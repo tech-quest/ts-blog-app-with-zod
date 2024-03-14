@@ -12,29 +12,29 @@ export const useMutateFetch = <T>(method: string, initialOptions?: { url?: strin
   const handleError = async (res: Response) => {
     try {
       const json = await res.json();
-      if (res.status === 404 && json.error) {
+      if (res.status === 404) {
         router.push('/not-found');
         return;
       }
-      if (!json.error) {
-        setError({ code: 'UNKNOWN_ERROR', message: '原因不明のエラーが発生しました。', fields: null });
-
+      if (json && json.code) {
+        setError({
+          code: json.code || 'SERVER_ERROR',
+          message: json.message || '受け取ったエラーメッセージはありません',
+          fields: json.fields || null,
+        });
+        return;
+      } else {
+        setError({
+          code: 'UNKNOWN_ERROR',
+          message: '原因不明のエラーが発生しました。',
+          fields: null,
+        });
         return;
       }
-
-      if (json.error.message && typeof json.error.message === 'object' && !Array.isArray(json.error.message)) {
-        setError(json.error as Error);
-        return;
-      }
-
-      if (typeof json.error.message === 'string') {
-        setError({ code: 'UNKNOWN_ERROR', message: json.error.message, fields: null });
-        return;
-      }
-      setError({ code: 'UNKNOWN_ERROR', message: '原因不明のエラーが発生しました。', fields: null });
-    } catch {
-      setStudyError({
-        code: 'API_NOT_AVAILABLE',
+    } catch (e) {
+      console.log('e: ', e);
+      setError({
+        code: 'NETWORK_ERROR',
         message: 'API が作成されていないか、ルーティングの設定が誤っています。',
         fields: null,
       });
