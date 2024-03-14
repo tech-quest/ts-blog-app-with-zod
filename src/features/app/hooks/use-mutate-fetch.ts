@@ -18,8 +18,8 @@ export const useMutateFetch = <T>(method: string, initialOptions?: { url?: strin
       }
       if (json && json.code) {
         setError({
-          code: json.code || 'SERVER_ERROR',
-          message: json.message || '受け取ったエラーメッセージはありません',
+          code: json.code,
+          message: json.message,
           fields: json.fields || null,
         });
         return;
