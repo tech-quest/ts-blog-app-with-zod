@@ -34,7 +34,7 @@ export const useMutateFetch = <T>(method: string, initialOptions?: { url?: strin
     } catch (e) {
       console.log('e: ', e);
       setError({
-        code: 'NETWORK_ERROR',
+        code: 'API_NOT_AVAILABLE',
         message: 'API が作成されていないか、ルーティングの設定が誤っています。',
         fields: null,
       });
