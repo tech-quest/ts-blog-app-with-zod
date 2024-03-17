@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import { FieldError } from '~/app/(unique)/admin/field-error-types';
+import { DefaultValues } from '~/app/(unique)/admin/update/[id]/default-values';
 import { MyButton } from '~/components/elements/buttons/button';
 import { MyRadioField } from '~/components/elements/forms/radio-field';
 import { MySelectField } from '~/components/elements/forms/select-field';
@@ -10,15 +12,14 @@ import { ArticleCategory, ArticleStatus, categoryItems, statusItems } from '~/fe
 
 import styles from './styles.module.css';
 
-export type DefaultValues = { title: string; content: string; category: ArticleCategory; status: ArticleStatus };
-
 type Props = {
   defaultValues: DefaultValues;
   isSubmitting: boolean;
   onSubmit: (title: string, content: string, category: ArticleCategory, status: ArticleStatus) => void;
+  errors: FieldError;
 };
 
-export const MyUpdateArticleForm = ({ defaultValues, isSubmitting, onSubmit }: Props) => {
+export const MyUpdateArticleForm = ({ defaultValues, isSubmitting, onSubmit, errors }: Props) => {
   const [title, setTitle] = useState(defaultValues.title);
   const [content, setContent] = useState(defaultValues.content);
   const [category, setCategory] = useState<ArticleCategory>(defaultValues.category);
@@ -45,14 +46,21 @@ export const MyUpdateArticleForm = ({ defaultValues, isSubmitting, onSubmit }: P
   return (
     <MyPanel>
       <form className={styles.form} onSubmit={handleSubmit} noValidate>
-        <MyTextField label="タイトル" name="title" value={title} onChange={handleChangeTitle} />
-        <MyTextareaField label="内容" name="content" value={content} onChange={handleChangeContent} />
+        <MyTextField label="タイトル" name="title" value={title} onChange={handleChangeTitle} error={errors?.title} />
+        <MyTextareaField
+          label="内容"
+          name="content"
+          value={content}
+          onChange={handleChangeContent}
+          error={errors?.content}
+        />
         <MySelectField
           items={categoryItems}
           label="カテゴリー"
           name="category"
           value={category}
           onChange={handleChangeCategory}
+          error={errors?.category}
         />
         <MyRadioField
           items={statusItems}
@@ -60,6 +68,7 @@ export const MyUpdateArticleForm = ({ defaultValues, isSubmitting, onSubmit }: P
           name="status"
           value={status}
           onChange={handleChangeStatus}
+          error={errors?.status}
         />
         <div>
           <MyButton type="submit" color="primary" disabled={isSubmitting}>

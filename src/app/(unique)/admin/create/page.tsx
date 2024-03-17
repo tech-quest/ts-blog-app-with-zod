@@ -1,9 +1,9 @@
 'use client';
 
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 import { MyButton } from '~/components/elements/buttons/button';
-import { MyAlertMessage } from '~/components/surface/dialogs/alert-message';
 import { MyPageContainer } from '~/features/app/components/page-container';
 import { MyStudyAlert } from '~/features/app/components/study-alert';
 import { MyAdminArticleContainer } from '~/features/article/components/admin-article-container';
@@ -13,13 +13,19 @@ import { useHooks } from './hooks';
 
 export default function ArticleCreatePage() {
   const { error, studyError, isCreating, handleSubmit } = useHooks();
+  const [fieldError, setfieldError] = useState({ title: '', content: '', category: '', status: '' });
+
+  useEffect(() => {
+    if (error && error.fields) {
+      setfieldError(error.fields);
+    }
+  }, [error]);
 
   return (
     <MyPageContainer>
       <h1>新規記事作成</h1>
       <MyAdminArticleContainer>
-        {error && <MyAlertMessage color="error">{error.message}</MyAlertMessage>}
-        <MyCreateArticleForm isSubmitting={isCreating} onSubmit={handleSubmit} />
+        <MyCreateArticleForm isSubmitting={isCreating} onSubmit={handleSubmit} errors={fieldError} />
         <div>
           <MyButton asChild>
             <Link href="/admin">一覧に戻る</Link>

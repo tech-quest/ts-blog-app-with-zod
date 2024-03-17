@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { FieldError } from '~/app/(unique)/admin/field-error-types';
 import { MyButton } from '~/components/elements/buttons/button';
 import { MyRadioField } from '~/components/elements/forms/radio-field';
 import { MySelectField } from '~/components/elements/forms/select-field';
@@ -13,9 +14,10 @@ import styles from './styles.module.css';
 type Props = {
   isSubmitting: boolean;
   onSubmit: (title: string, content: string, category: ArticleCategory, status: ArticleStatus) => void;
+  errors: FieldError;
 };
 
-export const MyCreateArticleForm = ({ isSubmitting, onSubmit }: Props) => {
+export const MyCreateArticleForm = ({ isSubmitting, onSubmit, errors }: Props) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [category, setCategory] = useState<ArticleCategory>('プログラミング');
@@ -42,14 +44,21 @@ export const MyCreateArticleForm = ({ isSubmitting, onSubmit }: Props) => {
   return (
     <MyPanel>
       <form className={styles.form} onSubmit={handleSubmit} noValidate>
-        <MyTextField label="タイトル" name="title" value={title} onChange={handleChangeTitle} />
-        <MyTextareaField label="内容" name="content" value={content} onChange={handleChangeContent} />
+        <MyTextField label="タイトル" name="title" value={title} onChange={handleChangeTitle} error={errors?.title} />
+        <MyTextareaField
+          label="内容"
+          name="content"
+          value={content}
+          onChange={handleChangeContent}
+          error={errors?.content}
+        />
         <MySelectField
           items={categoryItems}
           label="カテゴリー"
           name="category"
           value={category}
           onChange={handleChangeCategory}
+          error={errors?.category}
         />
         <MyRadioField
           items={statusItems}
@@ -57,6 +66,7 @@ export const MyCreateArticleForm = ({ isSubmitting, onSubmit }: Props) => {
           name="status"
           value={status}
           onChange={handleChangeStatus}
+          error={errors?.status}
         />
         <div>
           <MyButton type="submit" color="primary" disabled={isSubmitting}>

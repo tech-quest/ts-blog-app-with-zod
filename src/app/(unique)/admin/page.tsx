@@ -13,7 +13,6 @@ import { useHooks } from './hooks';
 export default function AdminPage() {
   const { articles, fetchError, fetchStudyError, isLoading, deleteError, deleteStudyError, isDeleting, handleDelete } =
     useHooks();
-
   return (
     <MyPageContainer>
       <h1>作成した記事の一覧</h1>

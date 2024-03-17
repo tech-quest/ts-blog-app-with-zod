@@ -33,12 +33,23 @@ export default function ArticleUpdatePage({ params }: { params: Params }) {
     <MyPageContainer>
       <h1>記事編集</h1>
       <MyAdminArticleContainer>
-        {findError && <MyAlertMessage color="error">{findError.message}</MyAlertMessage>}
-        {updateError && <MyAlertMessage color="error">{updateError.message}</MyAlertMessage>}
-        {deleteError && <MyAlertMessage color="error">{deleteError.message}</MyAlertMessage>}
+        {findError && findError.message && !findError.fields && (
+          <MyAlertMessage color="error">{findError.message}</MyAlertMessage>
+        )}
+        {updateError && updateError.message && !updateError.fields && (
+          <MyAlertMessage color="error">{updateError.message}</MyAlertMessage>
+        )}
+        {deleteError && deleteError.message && !deleteError.fields && (
+          <MyAlertMessage color="error">{deleteError.message}</MyAlertMessage>
+        )}
         {!defaultValues && isLoading && <div>読み込み中...</div>}
         {defaultValues && (
-          <MyUpdateArticleForm defaultValues={defaultValues} isSubmitting={isUpdating} onSubmit={handleSubmit} />
+          <MyUpdateArticleForm
+            defaultValues={defaultValues}
+            isSubmitting={isUpdating}
+            onSubmit={handleSubmit}
+            errors={updateError?.fields || { title: '', content: '', category: '', status: '' }}
+          />
         )}
         <MyArticleActions onClickDelete={handleDelete} isDeleting={isDeleting} />
       </MyAdminArticleContainer>

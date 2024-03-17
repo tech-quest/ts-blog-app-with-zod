@@ -1,30 +1,42 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-type ErrorResponse = {
-  message: string;
-};
+import { Error } from './error-types';
 
 export const useMutateFetch = <T>(method: string, initialOptions?: { url?: string }) => {
   const [data, setData] = useState<T | null>();
-  const [error, setError] = useState<ErrorResponse | null>();
-  const [studyError, setStudyError] = useState<ErrorResponse | null>();
+  const [error, setError] = useState<Error | null>();
+  const [studyError, setStudyError] = useState<Error | null>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
-
   const handleError = async (res: Response) => {
     try {
       const json = await res.json();
-
-      if (res.status === 404 && json.error) {
+      if (res.status === 404) {
         router.push('/not-found');
         return;
       }
-      setError(json.error ?? { message: '原因不明のエラーが発生しました。' });
-      return;
-    } catch {
-      setStudyError({
+      if (json && json.code) {
+        setError({
+          code: json.code,
+          message: json.message,
+          fields: json.fields || null,
+        });
+        return;
+      } else {
+        setError({
+          code: 'UNKNOWN_ERROR',
+          message: '原因不明のエラーが発生しました。',
+          fields: null,
+        });
+        return;
+      }
+    } catch (e) {
+      console.log('e: ', e);
+      setError({
+        code: 'API_NOT_AVAILABLE',
         message: 'API が作成されていないか、ルーティングの設定が誤っています。',
+        fields: null,
       });
     }
   };
@@ -35,10 +47,8 @@ export const useMutateFetch = <T>(method: string, initialOptions?: { url?: strin
     setStudyError(null);
     setIsLoading(true);
   };
-
   const mutate = async (values?, options?: { url?: string }) => {
     const body = JSON.stringify(values);
-
     setStatesWhenStartFetching();
 
     const configs: RequestInit = {
@@ -51,7 +61,9 @@ export const useMutateFetch = <T>(method: string, initialOptions?: { url?: strin
 
     if (!url) {
       setError({
+        code: 'MISSING_URL',
         message: 'URLが指定されていません。',
+        fields: null,
       });
       return;
     }
@@ -59,7 +71,6 @@ export const useMutateFetch = <T>(method: string, initialOptions?: { url?: strin
     return await fetch(url, { ...configs, body })
       .then(async (res) => {
         setIsLoading(false);
-
         if (!res.ok) {
           handleError(res);
           return;
@@ -70,7 +81,9 @@ export const useMutateFetch = <T>(method: string, initialOptions?: { url?: strin
       })
       .catch(() => {
         setError({
+          code: 'NETWORK_ERROR',
           message: '通信エラーが発生しました。ネットワーク環境を確認するか、時間を置いて再度アクセスしてください。',
+          fields: null,
         });
       });
   };
